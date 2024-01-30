@@ -1,0 +1,38 @@
+﻿
+
+<div class="card-group" id="cards"></div>
+
+@section Scripts {
+    <script src="~/js/travel.js"></script>
+    <script>
+        const sections = spots.CommonFormat.Section;
+        const cardHtmlArray = [];
+
+        for (let i = 0; i < sections.length; i += 3) {
+            cardHtmlArray.push('<div class="row">');
+
+            for (let j = 0; j < 3 && (i + j) < sections.length; j++) {
+                const section = sections[i + j];
+                const shortenedXbody = section.xbody.substring(0, 100);
+                const imgText = Array.isArray(section.file.img) ? section.file.img[0].text : section.file.img.text;
+                const cardHtml = `
+                                    <div class="col-md-4">
+                                        <div class="card mb-4">
+                                            <img class="card-img-top" src="${imgText}">
+                                            <div class="card-body">
+                                                <h5 class="card-title">${section.stitle}</h5>
+                                                <p class="card-text">${shortenedXbody}</p>
+                                            </div>
+                                            <div class="card-footer">
+                                                <small class="text-muted">${section.address}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                cardHtmlArray.push(cardHtml);
+            }
+            cardHtmlArray.push('</div>');
+        }
+        $('#cards').html(cardHtmlArray.join(''));
+    </script>
+}

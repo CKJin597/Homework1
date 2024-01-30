@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewData["Title"] = "JsonTest";
+}
+
+<h1>JsonTest</h1>
+<ul id="ul1"></ul>
+
+@section Scripts{
+    <script>
+        const theUI = document.querySelector("#ul1");
+            const emps = [{ "name": "Tom", "workYears": 3, "salary": 35000 },
+            { "name": "Jack", "workYears": 5, "salary": 40000 },
+            { "name": "Mary", "workYears": 7, "salary": 45000 }];
+            // console.log(emps);
+            const emp = {
+                "employees": [
+                    { "name": "Tom", "workYears": 3, "salary": 35000 },
+                    { "name": "Jack", "workYears": 5, "salary": 40000 },
+                    { "name": "Mary", "workYears": 7, "salary": 45000 }
+                ]
+            };
+            for (let i = 0, max = emps.length; i < max; i++) {
+                console.log(emps[i].name)
+                console.log(emps[i].workYears)
+                console.log(emps[i].salary)
+            }
+                for (i = 0; i < emps.length; i++) {
+                    console.log(emps[i].name);
+                    console.log(emps[i].workYears);
+                    console.log(emps[i].salary);
+                }
+                emps.forEach(emp => {
+                    console.log(emp.name);
+                    console.log(emp.workYears);
+                    console.log(emp.salary);
+                })
+        const liemps = emps.map(emp => {
+            return (
+                                    `
+                              <li>${name},${workYears},${salary}</li>
+                              `
+                )
+        })
+        const liEmps = emps.map(emp => `<li>${emp.name},${emp.workYears},${emp.salary}</li>`);
+        theUI.innerHTML = liemps.join("");
+
+        </script>
+
+}
+
+
