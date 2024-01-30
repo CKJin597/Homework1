@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "First";
+}
+
+<h1>Ajax開始</h1>
+<input type="button" class="btn btn-primary mb-3" value="Ajax開始" id="buttonStart" />
+<input type="button" class="btn btn-primary mb-3" value="Ajax停止" id="buttonStop" />
+<img src="~/images/ghost.gif" id="img1" style="display:none" />
+<div class="alert alert-info" id="divInfo"></div>
+
+@section Scripts {
+    <script>
+        const btnStart = document.querySelector("#buttonStart");
+        const btnStop = document.querySelector("#buttonStop");
+        const divInfo = document.querySelector("#divInfo");
+        const img1 = document.querySelector("#img1")
+        let abortController;
+
+        btnStop.addEventListener('click', () => {
+            if (abortController) {
+                abortController.abort();
+            }
+        })
+
+        btnStart.addEventListener('click', async () => {
+            try {
+                //顯示執行中的圖
+                img1.style.display = "inline";
+                //disable button
+                btnStart.setAttribute("disabled", "disabled");
+                btnStart.value = "執行中...";
+
+                abortController = new AbortController();
+                const signal = abortController.signal;
+
+                setTimeout(() => {
+                    abortController.abort();
+                }, 5000)
+
+
+                const response = await fetch('@Url.Content("~/api/ContentResult")', { signal });
+                if (!response.ok) {
+                    throw new Error(`${response.status}`);
+                }
+                const data = await response.text();
+                divInfo.innerHTML = `<h3>${data}</h3>`;
+
+
+            } catch (error) {
+                let message = error.message;
+                if (error.name === "AbortError") {
+                    message = "伺服器忙碌中，請稍後再來"
+                }
+                divInfo.innerHTML = `<h3>${message}</h3>`;
+            } finally {
+                console.log("finally");
+                img1.style.display = "none";
+                btnStart.removeAttribute("disabled");
+                btnStart.value = "Ajax 開始";
+            }
+            // console.log(fetch("/api/ContentResult"));
+
+
+            // fetch("/api/ContentResult")//寫法1
+            // fetch('@Url.Action("ContentResult", "api")')//寫法2
+            // fetch('@Url.Content("~/api/ContentResult")')//寫法3
+            //     .then(response => {
+            //         try {
+            //             if (!response.ok) {
+            //                 throw new Error(`有錯誤:${response.status}`);
+            //             }
+
+            //             console.log(response);
+            //             // // console.log(reponse.text());
+            //             response.headers.forEach((value, name) => {
+            //                 console.log(`${name}:${value}`)
+            //             })
+            //             console.log(response.headers.get('Content-Length'));
+            //             console.log(`OK:${response.ok}`);
+            //             console.log(`Status:${response.status}`);
+            //             return response.text();//從body取出文字
+
+            //             .then(data => {
+            //                 console.log(data);
+            //                 divInfo.innerHTML = `<h3>${data}</h3>`;
+            //             })
+
+            //         } catch (error) {
+            //             divInfo.innerHTML = `<h2>${error.message}</h2>`;
+            //         } finally {
+            //             console.log('finally');
+            //         }
+
+            //             // divInfo.innerHTML = reponse;
+            //         })
+        })
+
+        // divInfo.innerHTML = "<h5>Ajax開始</h5>";
+
+    </script>
+}
