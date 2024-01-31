@@ -36,24 +36,12 @@
         const comfirmname = document.querySelector("#divWarning");
         var inputValue = $('#userName').val();
 
-        document.addEventListener('click', function (event) {
-            var isClickInside = username.contains(event.target);
-
-            if (!isClickInside) {
-
-                $.ajax({
-                    url: '/api/CheckAccountAction',
-                    type: 'POST',
-                    data: { inputValue: inputValue },
-                    success: async function (result) {
-                        const url = `@Url.Content("~/api/CheckAccountAction")?name=${username.value}`;
-                        const response = await fetch(url);
-                        const data = await response.text();
-                        comfirmname.innerHTML = `${data}`;
-                    },
-                    // console.log(username.value);
-                })
-            }
+        document.addEventListener('change', async () {
+            const url = `@Url.Content("~/api/CheckAccountAction")?name=${username.value}`;
+            const response = await fetch(url);
+            const data = await response.text();
+            comfirmname.innerHTML = `${data}`;
+            // console.log(username.value);
         });
 
 
