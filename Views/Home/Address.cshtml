@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewData["Title"] = "Address";
+}
+
+<h1>Address</h1>
+<select id ="selcity">
+</select>
+<select id="seldistricts">
+</select>
+<select id="selroads">
+</select>
+@section Scripts
+{
+    <script>
+        const selcity = document.querySelector("#selcity");
+        const seldistricts = document.querySelector("#seldistricts");
+        const selroads = document.querySelector("#selroads");
+
+
+        (async() => { 
+            const url = `@Url.Content("~/api/cities")`;
+            const response = await fetch(url);
+            const datas = await response.json();
+            const Selcities = datas.map(city => { 
+                return (`<option value="${city}">${city}</option>`);
+            })
+            // console.log(Selcities);
+            selcity.innerHTML = Selcities.join("");
+            LoadDistricts();
+        })();
+
+        const LoadDistricts = (async () => {
+            const city = selcity.options[selcity.selectedIndex].value;
+            const url = `@Url.Content("~/api/Districts")?city=${city}`;
+            const response = await fetch(url);
+            const datas = await response.json();
+            const Seldistricts = datas.map(districts => {
+                return (`<option value="${districts}">${districts}</option>`);
+            })
+            // console.log(Selcities);
+            seldistricts.innerHTML = Seldistricts.join("");
+
+            LoadRoads();
+
+        });
+
+
+        const LoadRoads = (async () => {
+            const districts = seldistricts.options[seldistricts.selectedIndex].value;
+            const city = selcity.options[selcity.selectedIndex].value;
+
+            const url = `@Url.Content("~/api/Roads")?districts=${districts}`;
+            const response = await fetch(url);
+            const datas = await response.json();
+            const Selroads = datas.map(roads => {
+                return (`<option value=${roads}>${roads}</option>`);
+            })
+            console.log(Selroads);
+
+            selroads.innerHTML = Selroads.join("");
+        });
+
+
+
+        selcity.addEventListener('change', LoadDistricts);
+        seldistricts.addEventListener('change', LoadRoads);
+
+    </script>
+}

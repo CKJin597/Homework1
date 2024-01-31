@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSIT155.Models;
 using MSIT155Site.Models.DTO;
+using System.Linq;
 using System.Text;
 
 namespace MSIT155.Controllers
@@ -18,10 +19,17 @@ namespace MSIT155.Controllers
             var cities = _context.Addresses.Select(a => a.City).Distinct();
             return Json(cities);
         }
-        public IActionResult Address() 
+        public IActionResult Districts(string city)
         {
-            return View();
+            var districts = _context.Addresses.Where(a => a.City==city).Select(a => a.SiteId).Distinct();
+            return Json(districts);
         }
+        public IActionResult Roads(string districts)
+        {
+            var roads = _context.Addresses.Where(a => a.SiteId == districts).Select(a => a.Road).Distinct();
+            return Json(roads);
+        }
+
         public IActionResult Index()
         {
             Thread.Sleep(3000);
@@ -54,6 +62,14 @@ namespace MSIT155.Controllers
             }
 
             return NotFound();
+        }
+        public IActionResult CheckAccountAction(UserDTO _user)
+        {
+            bool check = _context.Members.Any(a=>a.Name== _user.Name);
+            if (check)
+                return Content("帳號已使用");
+            else
+                return Content("帳號可使用");
         }
 
     }

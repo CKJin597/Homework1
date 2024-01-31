@@ -32,17 +32,30 @@
 @section Scripts {
 
     <script>
-        const username = document.querySelector("#userName");
+        const txtName = document.querySelector("#userName");
         const comfirmname = document.querySelector("#divWarning");
-        var inputValue = $('#userName').val();
+        const txtEmail = document.querySelector("#UserEmail");
+        const txtAge = document.querySelector("#userAge");
+        const divinfo = document.querySelector("#div1");
+        const btnSummit = document.querySelector("#button1");
 
-        document.addEventListener('change', async () {
-            const url = `@Url.Content("~/api/CheckAccountAction")?name=${username.value}`;
+        btnSummit.addEventListener('click',async(event) =>{
+            event.preventDefault();
+            const url = `@Url.Content("~/api/Register")?name=${txtName.value}&email=${txtEmail.value}&age=${txtAge.value}`;
             const response = await fetch(url);
             const data = await response.text();
-            comfirmname.innerHTML = `${data}`;
-            // console.log(username.value);
+            divinfo.innerHTML = data;
+        })
+
+
+        txtName.addEventListener('change', async () =>{
+            const url = `@Url.Content("~/api/CheckAccountAction")?name=${txtName.value}`;
+            const response = await fetch(url);
+            const data = await response.text();
+            comfirmname.innerHTML = data;
+            // console.log(txtName.value);
         });
+
 
 
         // (async () => {
