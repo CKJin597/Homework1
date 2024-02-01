@@ -17,8 +17,21 @@
                 <input type="email" class="form-control" id="UserEmail" name="Email">
             </div>
             <div class="mb-3">
+                <label for="Password" class="form-label">密碼：</label>
+                <input type="password" class="form-control" id="Password" name="Password">
+            </div>
+            <div class="mb-3">
+                <label for="ConfirmPassword" class="form-label">密碼確認：</label>
+                <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword">
+            </div>
+
+            <div class="mb-3">
                 <label for="userAge" class="form-label">年紀：</label>
                 <input type="number" class="form-control" id="userAge" name="Age">
+            </div>
+            <div class="mb-3">
+                <label for="userAvatar" class="form-label">頭像：</label>
+                <input type="file" class="form-control" id="userAvatar" name="Avatar">
             </div>
 
             <button id="button1" type="submit" class="btn btn-primary">送出</button>
@@ -34,17 +47,33 @@
     <script>
         const txtName = document.querySelector("#userName");
         const comfirmname = document.querySelector("#divWarning");
-        const txtEmail = document.querySelector("#UserEmail");
-        const txtAge = document.querySelector("#userAge");
+        // const txtEmail = document.querySelector("#UserEmail");
+        // const txtAge = document.querySelector("#userAge");
         const divinfo = document.querySelector("#div1");
         const btnSummit = document.querySelector("#button1");
 
         btnSummit.addEventListener('click',async(event) =>{
             event.preventDefault();
-            const url = `@Url.Content("~/api/Register")?name=${txtName.value}&email=${txtEmail.value}&age=${txtAge.value}`;
-            const response = await fetch(url);
+            // const url = `@Url.Content("~/api/Register")?name=${txtName.value}&email=${txtEmail.value}&age=${txtAge.value}`;
+            // const response = await fetch(url);
+
+            const url = `@Url.Content("~/api/Register")`;
+            const formData = new FormData(document.querySelector("#userForm"));
+
+            // for (const pair of formData.entries()) {
+            //     console.log(pair[0]);
+            //     console.log(`${pair[1]}`);
+            // }
+            const response = await fetch(url,{
+                'method':'Post',
+                body: formData
+            });
+
+
             const data = await response.text();
             divinfo.innerHTML = data;
+
+            
         })
 
 

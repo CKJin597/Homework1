@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Views\Api\" />
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
 </Project>

@@ -43,5 +43,14 @@ namespace MSIT155.Controllers
         {
             return View();
         }
+
+        public IActionResult Spots()
+        {
+            return View();
+        }
+        public IActionResult AutoComplete()
+        {
+            return View();
+        }
     }
 }

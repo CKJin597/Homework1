@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewData["Title"] = "Spots";
+}
+
+@* <h1>Spots</h1> *@
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination" id="ul1">
+    </ul>
+</nav>
+<div class="card-group" id="div1"></div>
+
+
+@section Scripts
+{
+    <script>
+        const div1 = document.querySelector("#div1");
+        const ulPaging = document.querySelector('#ul1');
+        const searchData = {
+            "categoryId": "0",
+            "keyword": "北投",
+            "page": "1",
+            "pagesize": "9",
+            "sortby": "",
+            "sorttype": "arc",
+        };
+
+        const LoadSpots = async () => {
+            const response = await fetch('@Url.Content("~/api/Spots")', {
+                'method': 'POST',
+                'body': JSON.stringify(searchData),
+                'headers': { 'Content-Type': 'application/Json' }
+            })
+            const datas = await response.json();
+
+            console.log(datas);
+            const divSpots = datas.spotsResult.map(spot => {
+                const { spotId, spotTitle, spotImage, address, spotDescription } = spot;
+
+                return (`
+                          <div class="col-md-4">
+                          <div class="card mb-4">
+                          <img class="card-img-top" src="${spotImage}">
+                          <div class="card-body">
+                          <h5 class="card-title">${spotTitle}</h5>
+                          <p class="card-text">${spotDescription.length <= 100 ? spotDescription : spotDescription.substring(0, 100)}</p>
+                          </div>
+                          <div class="card-footer">
+                          <small class="text-muted">${address}</small>
+                          </div>
+                          </div>
+                          </div>
+                                                                        `
+                )
+            })
+            div1.innerHTML = divSpots.join("");
+            //分頁
+            // console.log(datas.totalPages);
+            let liPaging = "";
+            for (let i = 1, max = datas.totalPages; i <= max; i++) {
+                liPaging += ` <li class="page-item" onclick="pagingHandler(${i})"><a class="page-link" href="#">${i}</a></li>`
+            }
+            ulPaging.innerHTML = liPaging;
+
+        }
+
+
+        const pagingHandler = page => {
+            searchData.page = page;
+            LoadSpots();
+        }
+
+
+        LoadSpots();
+    </script>
+}
