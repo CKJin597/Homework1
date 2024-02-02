@@ -6,6 +6,8 @@
 @* <h1>Spots</h1> *@
 
 <nav aria-label="Page navigation example">
+    <div class="btn-group" role="group" aria-label="Basic outlined example" id="categoryid">
+    </div>
     <ul class="pagination" id="ul1">
     </ul>
 </nav>
@@ -17,6 +19,7 @@
     <script>
         const div1 = document.querySelector("#div1");
         const ulPaging = document.querySelector('#ul1');
+        const ulcategoryid = document.querySelector('#categoryid');
         const searchData = {
             "categoryId": "0",
             "keyword": "北投",
@@ -24,6 +27,7 @@
             "pagesize": "9",
             "sortby": "",
             "sorttype": "arc",
+            "categoryName": "養生溫泉",
         };
 
         const LoadSpots = async () => {
@@ -34,7 +38,6 @@
             })
             const datas = await response.json();
 
-            console.log(datas);
             const divSpots = datas.spotsResult.map(spot => {
                 const { spotId, spotTitle, spotImage, address, spotDescription } = spot;
 
@@ -61,10 +64,19 @@
             for (let i = 1, max = datas.totalPages; i <= max; i++) {
                 liPaging += ` <li class="page-item" onclick="pagingHandler(${i})"><a class="page-link" href="#">${i}</a></li>`
             }
+
+            let lititle = "";
+            for (let j = 1, max = categoriesValue.length(); j <= max; j++) {
+                lititle += `<button type="button" class="btn btn-outline-primary"> ${categoriesValue[j]}</button>`
+            }
+            ulcategoryid.innerHTML = lititle;
             ulPaging.innerHTML = liPaging;
 
         }
-
+        const cateHandler = cateId => { 
+        searchData.categoryId=cateId;
+            LoadSpots();
+        }
 
         const pagingHandler = page => {
             searchData.page = page;

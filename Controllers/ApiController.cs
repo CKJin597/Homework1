@@ -107,7 +107,11 @@ namespace MSIT155.Controllers
         [HttpPost]
         public IActionResult Spots([FromBody] SearchDTO _search)
         {
+
+
+
             //搜尋CategoryId
+
             var spots = _search.CategoryId == 0 ? _context.SpotImagesSpots : _context.SpotImagesSpots.Where(s => s.CategoryId == _search.CategoryId);
 
             //KeyWord搜尋
@@ -130,6 +134,11 @@ namespace MSIT155.Controllers
                     break;
             }
 
+
+
+
+
+
             //分頁功能
             //總共幾筆資料
             int spotCount = spots.Count();
@@ -147,6 +156,10 @@ namespace MSIT155.Controllers
             spotsPaging.TotalCount = spotCount;
             spotsPaging.SpotsResult=spots.ToList();
 
+            var cateValue = _context.Categories.Select(a => a.CategoryName).ToList();
+            spotsPaging.categoriesValue= cateValue; 
+
+            spotsPaging.categoriesName = _context.Categories.Where(a => a.CategoryId == _search.CategoryId).Select(a => a.CategoryName).ToString();
 
             return Json(spotsPaging);
         }
