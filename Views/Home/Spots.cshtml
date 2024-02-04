@@ -4,11 +4,28 @@
 }
 
 @* <h1>Spots</h1> *@
-
-<div class="col-3">
-    <select class="form-select" aria-label="Default select example" id="droppage">
-    </select>
+<div class="row">
+    <div class="col-3">
+        <select class="form-select" aria-label="Default select example" id="droppage">
+        </select>
+    </div>
+    <div class="col-4">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination" id="ul1">
+            </ul>
+        </nav>
+    </div>
+    <div class="col-2">
+        <select class="form-select" aria-label="Default select example" id="sortchange">
+            <option value="0">景點編號升冪</option>
+            <option value="1">景點編號降冪</option>
+        </select>
+    </div>
+    <div class="col-3">
+        <input type="search" class="form-control" placeholder="景點搜尋" id="searchKeyword" />
+    </div>
 </div>
+
 
 <nav aria-label="Page navigation example">
     
@@ -26,13 +43,16 @@
         const div1 = document.querySelector("#div1");
         const ulPaging = document.querySelector('#ul1');
         const ulcategoryid = document.querySelector('#categoryid');
+        const droppage = document.querySelector('#droppage');
+        const sortchange = document.querySelector('#sortchange');
+        const searchKeyword = document.querySelector('#searchKeyword');
         const searchData = {
             "categoryId": "1",
             "keyword": "",
             "page": "1",
             "pagesize": "3",
             "sortby": "",
-            "sorttype": "arc",
+            "sorttype": "asc",
             "categoryName": "養生溫泉",
         };
 
@@ -85,8 +105,7 @@
                 liShowpage += `<option value="${k}" >每頁顯示${k}筆資料</option>`
             }
             droppage.innerHTML = liShowpage;
-            droppage.options[0].disabled = true;
-
+            droppage.options[0].style.display = 'none';
         }
         const cateHandler = cateId => { 
         searchData.categoryId=cateId+1;
@@ -100,22 +119,32 @@
 
 
         droppage.addEventListener('change' , function() {
-            switch (droppage.value) {
-                case '3':
-                    searchData.pageSize = 3;
-                    break;
-                case '6':
-                    searchData.pageSize = 6;
-                    break;
-                case '9':
-                    searchData.pageSize = 9;
-                    break;
-            }
+            searchData.pagesize = droppage.value;
             LoadSpots();
             console.log(droppage.value);
         });
 
 
+        sortchange.addEventListener('change', function () {
+            switch (sortchange.value) {
+                case '0':
+                    searchData.sortType = "asc";
+                    break;
+                case '1':
+                    searchData.sortType = "desc";
+                    break;
+            }
+            LoadSpots();
+        })
+
+        searchKeyword.addEventListener('keydown', event => {
+            if (event.which === 13) {
+                searchData.keyword = event.target.value;
+                searchData.page = 1;
+                loadSpots();
+            }
+        })
+        loadSpots();
 
         LoadSpots();
     </script>
