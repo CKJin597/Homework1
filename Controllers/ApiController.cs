@@ -144,6 +144,7 @@ namespace MSIT155.Controllers
             int spotCount = spots.Count();
             //一頁幾筆資料
             int pagePerNumber = _search.PageSize ?? 9;
+
             //總共幾頁
             int pageCount = (int)Math.Ceiling((decimal)spotCount / pagePerNumber);
             //讀到第幾頁

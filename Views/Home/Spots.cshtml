@@ -5,13 +5,19 @@
 
 @* <h1>Spots</h1> *@
 
+<div class="col-3">
+    <select class="form-select" aria-label="Default select example" id="droppage">
+    </select>
+</div>
+
 <nav aria-label="Page navigation example">
+    
     <div class="btn-group" role="group" aria-label="Basic outlined example" id="categoryid">
     </div>
+    <div class="card-group" id="div1"></div>
     <ul class="pagination" id="ul1">
     </ul>
 </nav>
-<div class="card-group" id="div1"></div>
 
 
 @section Scripts
@@ -21,10 +27,10 @@
         const ulPaging = document.querySelector('#ul1');
         const ulcategoryid = document.querySelector('#categoryid');
         const searchData = {
-            "categoryId": "0",
-            "keyword": "北投",
+            "categoryId": "1",
+            "keyword": "",
             "page": "1",
-            "pagesize": "9",
+            "pagesize": "3",
             "sortby": "",
             "sorttype": "arc",
             "categoryName": "養生溫泉",
@@ -39,7 +45,7 @@
             const datas = await response.json();
 
             const divSpots = datas.spotsResult.map(spot => {
-                const { spotId, spotTitle, spotImage, address, spotDescription } = spot;
+                const { spotId, spotTitle, spotImage, address, spotDescription,categoriesValue } = spot;
 
                 return (`
                           <div class="col-md-4">
@@ -64,17 +70,26 @@
             for (let i = 1, max = datas.totalPages; i <= max; i++) {
                 liPaging += ` <li class="page-item" onclick="pagingHandler(${i})"><a class="page-link" href="#">${i}</a></li>`
             }
+            ulPaging.innerHTML = liPaging;
+
+            // console.log(datas.categoriesValue);
 
             let lititle = "";
-            for (let j = 1, max = categoriesValue.length(); j <= max; j++) {
-                lititle += `<button type="button" class="btn btn-outline-primary"> ${categoriesValue[j]}</button>`
+            for (let j = 0, max = datas.categoriesValue.length-1; j <= max; j++) {
+                lititle += `<button type="button" class="btn btn-outline-primary" onclick="cateHandler(${j})"> ${datas.categoriesValue[j]}</button>`
             }
             ulcategoryid.innerHTML = lititle;
-            ulPaging.innerHTML = liPaging;
+
+            let liShowpage = `<option value="default" > 每頁顯示3筆資料`;
+            for (let k = 3; k <=9 ; k+=3){
+                liShowpage += `<option value="${k}" >每頁顯示${k}筆資料</option>`
+            }
+            droppage.innerHTML = liShowpage;
+            droppage.options[0].disabled = true;
 
         }
         const cateHandler = cateId => { 
-        searchData.categoryId=cateId;
+        searchData.categoryId=cateId+1;
             LoadSpots();
         }
 
@@ -82,6 +97,24 @@
             searchData.page = page;
             LoadSpots();
         }
+
+
+        droppage.addEventListener('change' , function() {
+            switch (droppage.value) {
+                case '3':
+                    searchData.pageSize = 3;
+                    break;
+                case '6':
+                    searchData.pageSize = 6;
+                    break;
+                case '9':
+                    searchData.pageSize = 9;
+                    break;
+            }
+            LoadSpots();
+            console.log(droppage.value);
+        });
+
 
 
         LoadSpots();
